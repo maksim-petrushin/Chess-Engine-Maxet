@@ -15,8 +15,33 @@ public class ChessProject {
 			{"R","K","B","Q","A","B","K","R"},
 	};
 	static int globalDepth = 4;
+
+	static int globalDebth =4;
+	static int kingPositionC, kingPositionL;
+	public static void main(String[] args) {
+		while(!"A".equals(chessBoard[kingPositionC/8][kingPositionC%8])) {
+			kingPositionC++;
+		}
+		while(!"a".equals(chessBoard[kingPositionL/8][kingPositionL%8])) {
+			kingPositionL++;
+		}
+		System.out.println(possibleMoves());
+		makeMove(alphaBeta(globalDebth, 1000000, -1000000, "", 0));
+		//JFrame f = new JFrame("Title of Window");
+		//f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		//UserInterface ui = new UserInterface();
+		//f.add(ui);
+		//f.setSize(500, 500);
+		//f.setVisible(true);
+
+		for(int i=0; i<8; i++) {
+			System.out.println(Arrays.toString(chessBoard[i]));
+		}
+
+	}
 	public static String alphaBeta(int depth, int beta, int alpha, String move, int player) {
 		String list = possibleMoves();
+		
 		if(depth == 0 || list.length()==0) {
 			return move+(rating()*(player*2-1));
 		}
@@ -65,36 +90,30 @@ public class ChessProject {
 			
 		}
 	}
-	static int kingPositionC, kingPositionL;
-	public static void main(String[] args) {
-		while(!"A".equals(chessBoard[kingPositionC/8][kingPositionC%8])) {
-			kingPositionC++;
-		}
-		while(!"a".equals(chessBoard[kingPositionL/8][kingPositionL%8])) {
-			kingPositionL++;
-		}
-		//JFrame f = new JFrame("Title of Window");
-		//f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		//UserInterface ui = new UserInterface();
-		//f.add(ui);
-		//f.setSize(500, 500);
-		//f.setVisible(true);
-		System.out.println(possibleMoves());
-		System.out.println(possibleMoves());
-		for(int i=0; i<8; i++) {
-			System.out.println(Arrays.toString(chessBoard[i]));
-		}
-		makeMove("6444 ")	;
-		for(int i=0; i<8; i++) {
-			System.out.println(Arrays.toString(chessBoard[i]));
-		}
-
-	}
 	public static int rating() {
-		return 0;
+		return 1;
 	}
 	public static void flipBoard() {
-		
+		String temp;
+		for(int i=0; i<32; i++) {
+			int r = i/8, c=i%8;
+			if(Character.isUpperCase(chessBoard[r][c].charAt(0))){
+				temp = chessBoard[r][c].toLowerCase();
+			}
+			else {
+				temp = chessBoard[r][c].toUpperCase();
+			}
+			if(Character.isUpperCase(chessBoard[7-r][7-c].charAt(0))){
+				chessBoard[r][c] = chessBoard[7-r][7-c].toLowerCase();
+			}
+			else {
+				chessBoard[r][c] = chessBoard[7-r][7-c].toLowerCase();
+			}
+			chessBoard[7-r][7-c] = temp;
+		}
+		int kingTemp = kingPositionC;
+		kingPositionC = 63-kingPositionL;
+		kingPositionL = 63-kingTemp;
 	}
 	
 	public static void makeMove(String move) {
@@ -102,6 +121,9 @@ public class ChessProject {
 			chessBoard[Character.getNumericValue(move.charAt(2))][Character.getNumericValue(move.charAt(3))] 
 			= chessBoard[Character.getNumericValue(move.charAt(0))][Character.getNumericValue(move.charAt(1))];
 			chessBoard[Character.getNumericValue(move.charAt(0))][Character.getNumericValue(move.charAt(1))] = " ";
+			if("A".equals(chessBoard[Character.getNumericValue(move.charAt(2))][Character.getNumericValue(move.charAt(3))])) {
+				kingPositionC = 8*Character.getNumericValue(move.charAt(2))+Character.getNumericValue(move.charAt(3));
+			}
 		}else {//pawn promotion
 			chessBoard[1][Character.getNumericValue(move.charAt(0))]=" ";
 			chessBoard[0][Character.getNumericValue(move.charAt(1))]=String.valueOf(move.charAt(3));
@@ -112,6 +134,9 @@ public class ChessProject {
 			chessBoard[Character.getNumericValue(move.charAt(0))][Character.getNumericValue(move.charAt(1))]
 			= chessBoard[Character.getNumericValue(move.charAt(2))][Character.getNumericValue(move.charAt(3))];
 			chessBoard[Character.getNumericValue(move.charAt(2))][Character.getNumericValue(move.charAt(3))] = String.valueOf(move.charAt(4));
+			if("A".equals(chessBoard[Character.getNumericValue(move.charAt(0))][Character.getNumericValue(move.charAt(1))])) {
+				kingPositionC = 8*Character.getNumericValue(move.charAt(0))+Character.getNumericValue(move.charAt(1));
+			}
 		}else {//pawn promotion
 			chessBoard[1][Character.getNumericValue(move.charAt(0))]="P";
 			chessBoard[0][Character.getNumericValue(move.charAt(1))]=String.valueOf(move.charAt(2));

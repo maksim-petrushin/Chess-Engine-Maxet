@@ -1,7 +1,6 @@
 import javax.swing.*;
 import java.util.*;
 
-
 public class ChessProject {
 	
 	static String chessBoard[][]= {
@@ -15,28 +14,42 @@ public class ChessProject {
 			{"R","K","B","Q","A","B","K","R"},
 	};
 	static int globalDepth = 4;
-
+	static int maxetIsWhite = -1; 
 	static int globalDebth =4;
 	static int kingPositionC, kingPositionL;
 	public static void main(String[] args) {
+		System.out.print("Is Engine Maxet White? (1 - yes, 0 - no): ");
+		Scanner sc = new Scanner(System.in);
+		maxetIsWhite = sc.nextInt();
+		
+		
 		while(!"A".equals(chessBoard[kingPositionC/8][kingPositionC%8])) {
 			kingPositionC++;
 		}
 		while(!"a".equals(chessBoard[kingPositionL/8][kingPositionL%8])) {
 			kingPositionL++;
 		}
+		
+		
 		System.out.println(possibleMoves());
-		makeMove(alphaBeta(globalDebth, 1000000, -1000000, "", 0));
-		//JFrame f = new JFrame("Title of Window");
-		//f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		//UserInterface ui = new UserInterface();
-		//f.add(ui);
-		//f.setSize(500, 500);
-		//f.setVisible(true);
+		
+		JFrame f = new JFrame("Engine Maxet");
+		f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		UserInterface ui = new UserInterface();
+		f.add(ui);
+		f.setSize(500, 500);
+		f.setVisible(true);
+		if(maxetIsWhite == 1) {
+			makeMove(alphaBeta(globalDebth, 1000000, -1000000, "", 0));
+			flipBoard();
+			f.repaint();
+			
+		}
 
 		for(int i=0; i<8; i++) {
 			System.out.println(Arrays.toString(chessBoard[i]));
 		}
+		sc.close();
 
 	}
 	public static String alphaBeta(int depth, int beta, int alpha, String move, int player) {
